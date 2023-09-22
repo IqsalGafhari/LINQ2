@@ -10,7 +10,6 @@ namespace BasicConnection;
 
 public class Program
 {
-    // membuat string untuk configurasi koneksi ke database
     static string connectionString = "Data Source=DESKTOP-CI3320S;Integrated Security=True;Database=db_hr_dts;Connect Timeout=30;";
     static SqlConnection? connection;
     private static void Main()
@@ -61,11 +60,9 @@ public class Program
                 var country3 = new Country();
                 var region3 = new Region();
                 var location3 = new Location();
-
                 var getCountry = country3.GetAll();
                 var getRegion = region3.GetAll();
                 var getLocation = location3.GetAll();
-
                 var resultJoin = (from r in getRegion
                                   join c in getCountry on r.Id equals c.RegionId
                                   join l in getLocation on c.Id equals l.CountryId
@@ -77,7 +74,6 @@ public class Program
                                       RegionName = r.Name,
                                       City = l.City
                                   }).ToList();
-
                 var resultJoin2 = getRegion.Join(getCountry,
                                                  r => r.Id,
                                                  c => c.RegionId,
@@ -93,23 +89,18 @@ public class Program
                                                      RegionName = rc.r.Name,
                                                      City = l.City
                                                  }).ToList();
-
                 /*foreach (var item in resultJoin2)
                 {
                     Console.WriteLine($"{item.Id} - {item.NameRegion} - {item.NameCountry} - {item.RegionId}");
                 }*/
-
                 GeneralMenu.List(resultJoin2, "regions and countries");
                 break;
             case "6":
-                //menyimpan list dari return method getAll ke variabel tiap tabel
                 var getEmployee6 = new Employee().GetAll();
                 var getDepartment6 = new Department().GetAll();
                 var getLocation6 = new Location().GetAll();
                 var getCountry6 = new Country().GetAll();
                 var getRegion6 = new Region().GetAll();
-
-                //menyimpan list hasil join antar tabel ke variabel dataemployee
                 var dataEmployee = (from e in getEmployee6
                                     join d in getDepartment6 on e.DepartmentId equals d.Id
                                     join l in getLocation6 on d.LocationId equals l.Id
@@ -127,29 +118,23 @@ public class Program
                                         CountryName = c.Name,
                                         RegionName = r.Name
                                     }).ToList();
-                //menampilkan ke layar konsol menggunakan method list dari kelas generalmenu
+               
                 GeneralMenu.List(dataEmployee, "Data Employee");
 
                 break;
-            case "7":
-                //menyimpan list dari return method getAll ke variabel tiap tabel
+            case "7"://menyimpan data employee dan departemen ke dalam variabel getemployee dan departemen
                 var getEmployee7 = new Employee().GetAll();
                 var getDepartment7 = new Department().GetAll();
-
-                //menyimpan list hasil join dan group by antar tabel ke variabel departmentInfo
                 var departmentInfo = (from e in getEmployee7
                                       join d in getDepartment7 on e.DepartmentId equals d.Id
-                                      group e by new { d.Name, e.DepartmentId } into groupED
-                                      //implementasi View model 
+                                      group e by new { d.Name, e.DepartmentId } into groupED                            
                                       select new DataByDepartmentVM
                                       {
                                           DepartmentName = groupED.Key.Name,
-                                          TotalEmployee = groupED.Count(),
-                                          //mencari min max salary menggunakan lambda expression 
+                                          TotalEmployee = groupED.Count(),  
                                           MinSalary = groupED.Min(e => e.Salary),
                                           MaxSalary = groupED.Max(e => e.Salary)
-                                      }).ToList();
-                //menampilkan ke layar konsol menggunakan method list dari kelas generalmenu
+                                      }).ToList();               
                 GeneralMenu.List(departmentInfo, "Department Info");
                 break;
             case "10":
